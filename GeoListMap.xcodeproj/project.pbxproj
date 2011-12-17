@@ -1,0 +1,266 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D5C15C841494E313000171BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5C15C831494E313000171BF /* Foundation.framework */; };
+		D5C15C951494E384000171BF /* GLMAnnotation.h in Headers */ = {isa = PBXBuildFile; fileRef = D5C15C901494E384000171BF /* GLMAnnotation.h */; };
+		D5C15C961494E384000171BF /* GLMAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = D5C15C911494E384000171BF /* GLMAnnotation.m */; };
+		D5C15C971494E384000171BF /* GLMMapViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D5C15C921494E384000171BF /* GLMMapViewController.h */; };
+		D5C15C981494E384000171BF /* GLMMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D5C15C931494E384000171BF /* GLMMapViewController.m */; };
+		D5C15C9A1494E430000171BF /* GLMItemWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = D5C15C991494E430000171BF /* GLMItemWrapper.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D5C15C801494E313000171BF /* libGeoListMap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libGeoListMap.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5C15C831494E313000171BF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		D5C15C871494E313000171BF /* GeoListMap-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GeoListMap-Prefix.pch"; sourceTree = "<group>"; };
+		D5C15C901494E384000171BF /* GLMAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLMAnnotation.h; sourceTree = "<group>"; };
+		D5C15C911494E384000171BF /* GLMAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLMAnnotation.m; sourceTree = "<group>"; };
+		D5C15C921494E384000171BF /* GLMMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLMMapViewController.h; sourceTree = "<group>"; };
+		D5C15C931494E384000171BF /* GLMMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLMMapViewController.m; sourceTree = "<group>"; };
+		D5C15C991494E430000171BF /* GLMItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLMItemWrapper.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D5C15C7D1494E313000171BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D5C15C841494E313000171BF /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D5C15C751494E313000171BF = {
+			isa = PBXGroup;
+			children = (
+				D5C15CBC1494ECED000171BF /* CustomTitleView */,
+				D5C15CBB1494ECE3000171BF /* Nimbus */,
+				D5C15C851494E313000171BF /* GeoListMap */,
+				D5C15C821494E313000171BF /* Frameworks */,
+				D5C15C811494E313000171BF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D5C15C811494E313000171BF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D5C15C801494E313000171BF /* libGeoListMap.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D5C15C821494E313000171BF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D5C15C831494E313000171BF /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D5C15C851494E313000171BF /* GeoListMap */ = {
+			isa = PBXGroup;
+			children = (
+				D5C15C991494E430000171BF /* GLMItemWrapper.h */,
+				D5C15C901494E384000171BF /* GLMAnnotation.h */,
+				D5C15C911494E384000171BF /* GLMAnnotation.m */,
+				D5C15C921494E384000171BF /* GLMMapViewController.h */,
+				D5C15C931494E384000171BF /* GLMMapViewController.m */,
+				D5C15C861494E313000171BF /* Supporting Files */,
+			);
+			path = GeoListMap;
+			sourceTree = "<group>";
+		};
+		D5C15C861494E313000171BF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D5C15C871494E313000171BF /* GeoListMap-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D5C15CBB1494ECE3000171BF /* Nimbus */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Nimbus;
+			sourceTree = "<group>";
+		};
+		D5C15CBC1494ECED000171BF /* CustomTitleView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = CustomTitleView;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D5C15C7E1494E313000171BF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D5C15C951494E384000171BF /* GLMAnnotation.h in Headers */,
+				D5C15C971494E384000171BF /* GLMMapViewController.h in Headers */,
+				D5C15C9A1494E430000171BF /* GLMItemWrapper.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D5C15C7F1494E313000171BF /* GeoListMap */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D5C15C8D1494E313000171BF /* Build configuration list for PBXNativeTarget "GeoListMap" */;
+			buildPhases = (
+				D5C15C7C1494E313000171BF /* Sources */,
+				D5C15C7D1494E313000171BF /* Frameworks */,
+				D5C15C7E1494E313000171BF /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GeoListMap;
+			productName = GeoListMap;
+			productReference = D5C15C801494E313000171BF /* libGeoListMap.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D5C15C771494E313000171BF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = D5C15C7A1494E313000171BF /* Build configuration list for PBXProject "GeoListMap" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = D5C15C751494E313000171BF;
+			productRefGroup = D5C15C811494E313000171BF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D5C15C7F1494E313000171BF /* GeoListMap */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D5C15C7C1494E313000171BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D5C15C961494E384000171BF /* GLMAnnotation.m in Sources */,
+				D5C15C981494E384000171BF /* GLMMapViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D5C15C8B1494E313000171BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/../CustomTitleView";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "";
+			};
+			name = Debug;
+		};
+		D5C15C8C1494E313000171BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/../CustomTitleView";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D5C15C8E1494E313000171BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/GeoListMap.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GeoListMap/GeoListMap-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		D5C15C8F1494E313000171BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/GeoListMap.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GeoListMap/GeoListMap-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D5C15C7A1494E313000171BF /* Build configuration list for PBXProject "GeoListMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D5C15C8B1494E313000171BF /* Debug */,
+				D5C15C8C1494E313000171BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D5C15C8D1494E313000171BF /* Build configuration list for PBXNativeTarget "GeoListMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D5C15C8E1494E313000171BF /* Debug */,
+				D5C15C8F1494E313000171BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D5C15C771494E313000171BF /* Project object */;
+}
