@@ -32,7 +32,7 @@
         }
         case 1: {
             //around adress
-            [[LocationManager sharedInstance] chooseCustomLocation];
+            [[LocationManager sharedInstance] chooseCustomLocationFromController:self];
             break;
         }
         default:
@@ -161,10 +161,15 @@
 
 -(void)cleanup
 {
-    [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"currentLocation"];
-	[[LocationManager sharedInstance] removeObserver:self forKeyPath:@"currentPlacemark"];
-    [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"customLocation"];
-    [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"customPlacemark"];
+    @try{
+        [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"currentLocation"];
+        [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"currentPlacemark"];
+        [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"customLocation"];
+        [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"customPlacemark"];
+    }@catch(id anException){
+        //do nothing, obviously it wasn't attached because an exception was thrown
+    }
+    [super cleanup];
 }
 
 - (void)viewDidUnload {

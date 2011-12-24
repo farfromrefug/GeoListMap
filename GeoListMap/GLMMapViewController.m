@@ -198,6 +198,7 @@
         {
             [_mapView addAnnotation:annot];
         }
+        [annot release];
 	}
     
     [self zoomToFitMapAnnotations];
