@@ -10,14 +10,17 @@
 #import <MapKit/MapKit.h>
 #import "GLMItemWrapper.h"
 
-#define kMapDefaultSpanDelta		0.005
+#define kMapDefaultSpanDelta		0.5
 
 @interface GLMMapViewController : UIViewController <MKMapViewDelegate>
 {
     MKMapView*                  _mapView;
 	NSArray*					mItemsList;
+    
+    BOOL _zoomFitWithCurrentLocation;
 }
 @property (nonatomic, assign) MKMapView* mapView;
+@property (nonatomic) BOOL zoomFitWithCurrentLocation;
 
 - (void)refreshMapAnnotations;
 

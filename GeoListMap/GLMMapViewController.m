@@ -12,12 +12,26 @@
 
 @interface GLMMapViewController (Private)
 - (void)refreshMapAnnotations;
+-(void)_init;
 @end
 
 
 @implementation GLMMapViewController
 @synthesize  mapView = _mapView;
+@synthesize zoomFitWithCurrentLocation = _zoomFitWithCurrentLocation;
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
+
+
+-(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+	if (self)
+	{
+		// Custom initialization.
+        [self _init];
+	}
+	return self;
+}
 
 - (id)initWithItemsList:(NSArray*)itemsList
 {
@@ -25,8 +39,8 @@
 	if (self)
 	{
 		// Custom initialization.
+        [self _init];
 		mItemsList = [itemsList retain];
-		
 	}
 	return self;
 }
@@ -37,10 +51,21 @@
 	if (self)
 	{
 		// Custom initialization.
-		mItemsList = [[NSArray arrayWithObject:item] retain];
-		
+        [self _init];
+        mItemsList = [[NSArray arrayWithObject:item] retain];
+
 	}
 	return self;
+}
+
+-(void)_init
+{
+    mItemsList = nil;
+    _zoomFitWithCurrentLocation = NO;
+    _mapView = [[MKMapView alloc] init];
+    _mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _mapView.delegate = self;
+    [_mapView setUserTrackingMode:MKUserTrackingModeNone];
 }
 
 - (void)setItemsList:(NSArray*)itemsList
@@ -61,8 +86,10 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-    
+        
     self.navigationItem.titleView = [[[CustomTitleView alloc] initWithTitle:NSLocalizedString(@"Map", nil) ] autorelease];
+    _mapView.frame = self.view.bounds;
+    [self.view addSubview:_mapView];
 
     
     //Create the custom back button
@@ -70,19 +97,11 @@
 //    button.frame = TTSTYLEVAR(toolbarBackButtonFrame);
 //    [button addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
 //    self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
-    
-	
 	CLLocationCoordinate2D franceCenterCoordinate;
 	franceCenterCoordinate.latitude = kFranceCenterLatitude;
 	franceCenterCoordinate.longitude = kFranceCenterLongitude;
 	
 	MKCoordinateRegion region = MKCoordinateRegionMake(franceCenterCoordinate, MKCoordinateSpanMake(kFranceCenterSpan, kFranceCenterSpan));
-	
-    _mapView = [[[MKMapView alloc] initWithFrame:self.view.bounds] autorelease];
-    _mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _mapView.delegate = self;
-    [self.view addSubview:_mapView];
-    
 	[_mapView setRegion:region];
 	
 	[self refreshMapAnnotations];
@@ -111,6 +130,24 @@
     //    [self.navigationController.navigationBar setNeedsDisplay];
 }
 
+
+-(void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    [self zoomToFitMapAnnotations];
+    for(NSObject<MKAnnotation>* annotation in [_mapView selectedAnnotations])
+    {
+        [_mapView deselectAnnotation:annotation animated:NO];
+        [_mapView selectAnnotation:annotation animated:YES];
+    }
+    
+}
+
 #pragma mark -
 #pragma mark Memory Management Methods
 - (void)didReceiveMemoryWarning {
@@ -129,6 +166,7 @@
 
 -(void)cleanup
 { 
+    [_mapView release];
 }
 
 - (void)dealloc
@@ -137,10 +175,28 @@
 	[super dealloc];
 }
 
+- (void)zoomToUserLocation
+{
+    if (!_mapView.userLocation || _mapView.userLocationVisible)
+        return;
+    
+    MKCoordinateRegion region;
+    region.center = _mapView.userLocation.location.coordinate;
+    region.span = MKCoordinateSpanMake(2.0, 2.0);
+    region = [self.mapView regionThatFits:region];
+    [self.mapView setRegion:region animated:YES];
+}
+
 -(void)zoomToFitMapAnnotations
 {
-    if([_mapView.annotations count] == 0)
-        return;
+    DLog(@"nb annot %d", [_mapView.annotations count]);
+    if([_mapView.annotations count] == 0 || ( _mapView.userLocation && [_mapView.annotations count] == 1))
+    {
+        
+        if (_mapView.userLocation != nil)
+            [self zoomToUserLocation];
+        return; 
+    }
     
     CLLocationCoordinate2D topLeftCoord;
     topLeftCoord.latitude = -90;
@@ -152,6 +208,9 @@
     
     for(NSObject<MKAnnotation>* annotation in _mapView.annotations)
     {
+        if (!_zoomFitWithCurrentLocation && [annotation isKindOfClass:[ MKUserLocation class]])
+            continue;
+        
         topLeftCoord.longitude = fmin(topLeftCoord.longitude, annotation.coordinate.longitude);
         topLeftCoord.latitude = fmax(topLeftCoord.latitude, annotation.coordinate.latitude);
         
@@ -207,7 +266,7 @@
 #pragma mark Map View Delegate Methods
 - (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
 {
-    [_mapView selectAnnotation:[[_mapView annotations] objectAtIndex:0] animated:YES];
+    [_mapView selectAnnotation:[[_mapView annotations] objectAtIndex:0] animated:NO];
 }
 
 //- (void) mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views {
@@ -272,11 +331,16 @@
         DLog(@"view.annotation is not an PartnerWrapper: %@", view.annotation);
         return;
     }
-//    
-//    SimpleWebViewController *webViewController = [[SimpleWebViewController alloc] initWithTitle:view.annotation.title andUrlString:((IPAnnotation*)view.annotation).item.pageUrl];
-//	//[self presentModalViewController:webViewController animated:YES];
-//    [[[TTNavigator navigator] topViewController].navigationController pushViewController:webViewController animated:YES];
-//	[webViewController release];
+}
+
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
+{
+    [self zoomToFitMapAnnotations];
+}
+
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
+{
+    DLog(@"regionWillChangeAnimated:");
 }
 
 @end

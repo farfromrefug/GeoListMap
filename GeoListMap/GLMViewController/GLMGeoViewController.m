@@ -32,7 +32,7 @@
         }
         case 1: {
             //around adress
-            [[LocationManager sharedInstance] chooseCustomLocation];
+            [[LocationManager sharedInstance] chooseCustomLocationFromController:self];
             break;
         }
         default:
