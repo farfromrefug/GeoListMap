@@ -23,12 +23,16 @@
     	
     IBOutlet UIView *mContainer;
     LoadingViewController* mLoadingViewController;
+    
+    UIBarButtonItem* _mapListButton;
 }
+@property(nonatomic, retain) UIBarButtonItem* mapListButton;
 
 - (void)setDisplayMode:(NSInteger)mode;
 - (void) switchDisplayMode;
 - (void) refreshData;
 - (void) refreshAfterData;
 - (void)cleanup;
+- (Class)classForMapController;
 
 @end

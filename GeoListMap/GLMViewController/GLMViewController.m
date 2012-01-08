@@ -13,7 +13,7 @@
 @end
 
 @implementation GLMViewController
-
+@synthesize mapListButton = _mapListButton;
 
 //#pragma mark -
 //#pragma mark CBCTabDelegate
@@ -75,7 +75,7 @@
 //            [button setImage:[UIImage imageNamed:@"NavigationBar.bundle/list_on.png"] forState:UIControlStateHighlighted];
 //            self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
             
-            TTButton *button = (TTButton*)self.navigationItem.rightBarButtonItem.customView; 
+            TTButton *button = (TTButton*)self.mapListButton.customView; 
             [button setImage:@"bundle://NavigationBar.bundle/list.png" forState:UIControlStateNormal];
             [button setImage:@"bundle://NavigationBar.bundle/list_on.png" forState:UIControlStateHighlighted];
             
@@ -114,7 +114,7 @@
 //            [button setImage:[UIImage imageNamed:@"NavigationBar.bundle/map.png"] forState:UIControlStateNormal];
 //            [button setImage:[UIImage imageNamed:@"NavigationBar.bundle/map_on.png"] forState:UIControlStateHighlighted];
 //            self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
-            TTButton *button = (TTButton*)self.navigationItem.rightBarButtonItem.customView; 
+            TTButton *button = (TTButton*)self.mapListButton.customView; 
             [button setImage:@"bundle://NavigationBar.bundle/map.png" forState:UIControlStateNormal];
             [button setImage:@"bundle://NavigationBar.bundle/map_on.png" forState:UIControlStateHighlighted];
             
@@ -232,13 +232,19 @@
     return self;
 }
 
+- (Class)classForMapController
+{
+    return [GLMMapViewController class];
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     _currentDisplayMode = kListMode;
     
 	[super viewDidLoad];
 	
-	mMapViewController = [[GLMMapViewController alloc] initWithItemsList:mTableData];
+    Class mapControllerClass = [self  classForMapController];
+	mMapViewController = [[mapControllerClass alloc] initWithItemsList:mTableData];
 	
 	
 	CALayer *layer = mMapViewController.view.layer;
@@ -272,7 +278,9 @@
     [button setImage:@"bundle://NavigationBar.bundle/map.png" forState:UIControlStateNormal];
     [button setImage:@"bundle://NavigationBar.bundle/map_on.png" forState:UIControlStateHighlighted];
     [button addTarget:self action:@selector(switchDisplayMode) forControlEvents:UIControlEventTouchUpInside];
-    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
+    self.mapListButton = [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
+
+    self.navigationItem.rightBarButtonItem = self.mapListButton;
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -376,6 +384,8 @@
 
 -(void)cleanup
 {
+    TT_RELEASE_SAFELY(mMapViewController);
+    TT_RELEASE_SAFELY(_mapListButton);
     TT_RELEASE_SAFELY(mTableView); 
     TT_RELEASE_SAFELY(mTableData); 
     TT_RELEASE_SAFELY(mNoResultView); 

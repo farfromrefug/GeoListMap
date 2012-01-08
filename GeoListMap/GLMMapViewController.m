@@ -10,9 +10,6 @@
 #import "GLMAnnotation.h"
 #import "CustomTitleView.h"
 
-@interface GLMMapViewController (Private)
-- (void)refreshMapAnnotations;
-@end
 
 
 @implementation GLMMapViewController
