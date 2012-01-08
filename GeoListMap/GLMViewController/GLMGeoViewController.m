@@ -8,6 +8,7 @@
 
 @implementation GLMGeoViewController
 @synthesize toolbarLabel = _toolbarLabel;
+@synthesize geolocButton = _geolocButton;
 
 #pragma mark -
 #pragma mark Custom Methods
@@ -16,7 +17,7 @@
 {
     //invoque action sheet
     UIActionSheet* actionShit = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Annuler", @"Action sheet cancel button") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Autour de vous", @"Action sheet around you"),NSLocalizedString(@"Autour d'une adresse", @"Action sheet around address"), nil];
-    [actionShit showFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES];
+    [actionShit showFromBarButtonItem:_geolocButton animated:YES];
     [actionShit release];
 }
 
@@ -28,6 +29,19 @@
         case 0: {
             //around me
             [[LocationManager sharedInstance] goToCurrentLocation];
+            
+            
+            
+            UIActivityIndicatorView* view = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite] autorelease];
+            [view startAnimating];
+
+            view.frame = CGRectMake(14, 6,  self.geolocButton.customView.width - 28, self.geolocButton.customView.height - 12);
+            [self.geolocButton.customView addSubview:view];
+            [(TTButton*)self.geolocButton.customView setImage:nil forState:UIControlStateNormal];
+            [(TTButton*)self.geolocButton.customView setImage:nil forState:UIControlStateHighlighted];
+            [(TTButton*)self.geolocButton.customView removeTarget:self action:@selector(chooseLocationButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+            
+            
             break;
         }
         case 1: {
@@ -45,6 +59,11 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+    [self.geolocButton.customView removeAllSubviews];
+    [(TTButton*)self.geolocButton.customView setImage:@"bundle://NavigationBar.bundle/geoloc.png" forState:UIControlStateNormal];
+    [(TTButton*)self.geolocButton.customView setImage:@"bundle://NavigationBar.bundle/geoloc_on.png" forState:UIControlStateHighlighted];
+    [(TTButton*)self.geolocButton.customView addTarget:self action:@selector(chooseLocationButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+
     if ([keyPath isEqualToString:@"currentLocation"]
         || [keyPath isEqualToString:@"customLocation"]) {
         [self performSelector :@selector(refreshData)
@@ -72,14 +91,7 @@
 -(void) fillToolbar
 {
     NSMutableArray *items = [NSMutableArray array];  
-    //set navigation left button  (loc icon)
-    TTButton *button = [TTButton buttonWithStyle:@"toolbarButton:"]; 
-    button.frame = TTSTYLEVAR(toolbarButtonFrame);
-    [button setImage:@"bundle://NavigationBar.bundle/geoloc.png" forState:UIControlStateNormal];
-    [button setImage:@"bundle://NavigationBar.bundle/geoloc_on.png" forState:UIControlStateHighlighted];
-    [button addTarget:self action:@selector(chooseLocationButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    [items addObject:[[[UIBarButtonItem alloc] initWithCustomView:button] autorelease]];
-    
+    [items addObject:_geolocButton];
     _toolbarLabel = [[[TTLabel alloc] initWithText:@"Test"] autorelease];
     [items addObject:[[[UIBarButtonItem alloc] initWithCustomView:_toolbarLabel] autorelease]];
     
@@ -98,25 +110,24 @@
 	[[LocationManager sharedInstance] addObserver:self forKeyPath:@"customPlacemark" options:NSKeyValueObservingOptionNew context:nil];
     
 	[super viewDidLoad];
-    [self fillToolbar];
+    
+    TTButton* button = [TTButton buttonWithStyle:@"toolbarButton:"]; 
+    button.frame = TTSTYLEVAR(toolbarButtonFrame);
+    [button setImage:@"bundle://NavigationBar.bundle/geoloc.png" forState:UIControlStateNormal];
+    [button setImage:@"bundle://NavigationBar.bundle/geoloc_on.png" forState:UIControlStateHighlighted];
+    [button addTarget:self action:@selector(chooseLocationButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.geolocButton = [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
+    
 	    
     if (kNavMode == 0) //tabbar
     {
         //set navigation left button  (loc icon)
-        TTButton *button = [TTButton buttonWithStyle:@"toolbarButton:"]; 
-        button.frame = TTSTYLEVAR(toolbarButtonFrame);
-        [button setImage:@"bundle://NavigationBar.bundle/geoloc.png" forState:UIControlStateNormal];
-        [button setImage:@"bundle://NavigationBar.bundle/geoloc_on.png" forState:UIControlStateHighlighted];
-        [button addTarget:self action:@selector(chooseLocationButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
+
+        self.navigationItem.leftBarButtonItem = self.geolocButton;
     }
     else
     {
-        //set navigation left button  (loc icon)
-        TTButton *button = [TTButton buttonWithStyle:@"toolbarBackButton:" title:@"Portail"]; 
-        button.frame = TTSTYLEVAR(toolbarBackButtonFrame);
-        [button addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-        self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
+        [self fillToolbar];
     }
         
     if ([LocationManager sharedInstance].customPlacemark) {
@@ -161,10 +172,17 @@
 
 -(void)cleanup
 {
-    [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"currentLocation"];
-	[[LocationManager sharedInstance] removeObserver:self forKeyPath:@"currentPlacemark"];
-    [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"customLocation"];
-    [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"customPlacemark"];
+    TT_RELEASE_SAFELY(_geolocButton);
+
+    @try{
+        [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"currentLocation"];
+        [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"currentPlacemark"];
+        [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"customLocation"];
+        [[LocationManager sharedInstance] removeObserver:self forKeyPath:@"customPlacemark"];
+    }@catch(id anException){
+        //do nothing, obviously it wasn't attached because an exception was thrown
+    }
+    [super cleanup];
 }
 
 - (void)viewDidUnload {
