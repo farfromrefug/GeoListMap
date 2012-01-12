@@ -43,9 +43,7 @@
         }
         case 1: {
             //around adress
-            IPGeoLocFindViewController* controller = [[IPGeoLocFindViewController alloc] initWithDelegate:[LocationManager sharedInstance]];
-            [[LocationManager sharedInstance] chooseCustomLocationFromController:self usingController:controller];
-            [controller release];
+            [[LocationManager sharedInstance] chooseCustomLocationFromController:self];
             break;
         }
         default:
