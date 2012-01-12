@@ -5,6 +5,7 @@
 #import <CoreLocation/CoreLocation.h>
 
 #import "LocationManager.h"
+#import "IPGeoLocFindViewController.h"
 
 @implementation GLMGeoViewController
 @synthesize toolbarLabel = _toolbarLabel;
@@ -28,25 +29,23 @@
     switch (buttonIndex) {
         case 0: {
             //around me
-            [[LocationManager sharedInstance] goToCurrentLocation];
-            
-            
-            
             UIActivityIndicatorView* view = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite] autorelease];
             [view startAnimating];
-
+            
             view.frame = CGRectMake(14, 6,  self.geolocButton.customView.width - 28, self.geolocButton.customView.height - 12);
             [self.geolocButton.customView addSubview:view];
             [(TTButton*)self.geolocButton.customView setImage:nil forState:UIControlStateNormal];
             [(TTButton*)self.geolocButton.customView setImage:nil forState:UIControlStateHighlighted];
             [(TTButton*)self.geolocButton.customView removeTarget:self action:@selector(chooseLocationButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             
-            
+            [[LocationManager sharedInstance] goToCurrentLocation];
             break;
         }
         case 1: {
             //around adress
-            [[LocationManager sharedInstance] chooseCustomLocationFromController:self];
+            IPGeoLocFindViewController* controller = [[IPGeoLocFindViewController alloc] initWithDelegate:[LocationManager sharedInstance]];
+            [[LocationManager sharedInstance] chooseCustomLocationFromController:self usingController:controller];
+            [controller release];
             break;
         }
         default:
