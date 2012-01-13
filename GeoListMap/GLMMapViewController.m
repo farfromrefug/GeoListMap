@@ -190,12 +190,21 @@
 -(void)zoomToFitMapAnnotations
 {
     DLog(@"nb annot %d", [_mapView.annotations count]);
-    if([_mapView.annotations count] == 0 || ( _mapView.userLocation && [_mapView.annotations count] == 1))
+    if([_mapView.annotations count] == 0 /*|| ( _mapView.userLocation && [_mapView.annotations count] == 1)*/)
     {
         
         if (_mapView.userLocation != nil)
             [self zoomToUserLocation];
         return; 
+    }
+    else if ([_mapView.annotations count] == 1)
+    {
+        MKCoordinateRegion region;
+        region.center = ((id<MKAnnotation>)[_mapView.annotations objectAtIndex:0]).coordinate;
+        region.span = MKCoordinateSpanMake(0.05, 0.05);
+        region = [self.mapView regionThatFits:region];
+        [self.mapView setRegion:region animated:YES];
+        return;
     }
     
     CLLocationCoordinate2D topLeftCoord;
@@ -206,8 +215,12 @@
     bottomRightCoord.latitude = 90;
     bottomRightCoord.longitude = -180;
     
-    for(NSObject<MKAnnotation>* annotation in _mapView.annotations)
+    for(id<MKAnnotation> annotation in _mapView.annotations)
     {
+        if ([annotation isKindOfClass:[ MKUserLocation class]])
+        {
+            DLog(@"user loc annot");
+        }
         if (!_zoomFitWithCurrentLocation && [annotation isKindOfClass:[ MKUserLocation class]])
             continue;
         
@@ -329,7 +342,6 @@
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
 {
     if (![view.annotation isKindOfClass:[GLMAnnotation class]]) {
-        DLog(@"view.annotation is not an PartnerWrapper: %@", view.annotation);
         return;
     }
 }
@@ -341,7 +353,6 @@
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
 {
-    DLog(@"regionWillChangeAnimated:");
 }
 
 @end

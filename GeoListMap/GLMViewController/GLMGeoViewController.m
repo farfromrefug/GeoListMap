@@ -6,6 +6,7 @@
 
 #import "LocationManager.h"
 #import "IPGeoLocFindViewController.h"
+#import "LoadingViewController.h"
 
 @implementation GLMGeoViewController
 @synthesize toolbarLabel = _toolbarLabel;
@@ -38,6 +39,7 @@
             [(TTButton*)self.geolocButton.customView setImage:nil forState:UIControlStateHighlighted];
             [(TTButton*)self.geolocButton.customView removeTarget:self action:@selector(chooseLocationButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             
+            [mLoadingViewController showLoading];
             [[LocationManager sharedInstance] goToCurrentLocation];
             break;
         }
@@ -56,6 +58,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+    BOOL hideLoading = YES;
     [self.geolocButton.customView removeAllSubviews];
     [(TTButton*)self.geolocButton.customView setImage:@"bundle://NavigationBar.bundle/geoloc.png" forState:UIControlStateNormal];
     [(TTButton*)self.geolocButton.customView setImage:@"bundle://NavigationBar.bundle/geoloc_on.png" forState:UIControlStateHighlighted];
@@ -63,16 +66,22 @@
 
     if ([keyPath isEqualToString:@"currentLocation"]
         || [keyPath isEqualToString:@"customLocation"]) {
-        [self performSelector :@selector(refreshData)
-                   withObject :nil
-                   afterDelay :3.0];
+//        [self performSelector :@selector(refreshData)
+//                   withObject :nil
+//                   afterDelay :3.0];
+        hideLoading = NO;
+        [self refreshData];
     }
     else if ([keyPath isEqualToString:@"currentPlacemark"]
              || [keyPath isEqualToString:@"customPlacemark"]) 
     {
-        [self refreshData];
-    } else
+//        hideLoading = NO;
+//       [self refreshData];
+    } 
+    else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    if (hideLoading)
+        [mLoadingViewController hideLoading];
 }
 
 #pragma mark -
@@ -134,12 +143,13 @@
     {
         [self observeValueForKeyPath:@"currentPlacemark" ofObject:nil change:nil context:nil];
     }
-    else
-    {
-        [self performSelector :@selector(refreshData)
-                   withObject :nil
-                   afterDelay :1.0];
-    }
+//    else
+//    {
+//        [self performSelector :@selector(refreshData)
+//                   withObject :nil
+//                   afterDelay :1.0];
+//    }
+    [self refreshData];
     
 }
 

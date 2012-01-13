@@ -185,7 +185,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)requestDidFinishLoad:(TTURLRequest*)request {
-    [mLoadingViewController hideLoading];
+    [mLoadingViewController forceHideLoading];
 }
 
 - (void)requestDidCancelLoad:(TTURLRequest*)request{
@@ -196,7 +196,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)request:(TTURLRequest*)request didFailLoadWithError:(NSError*)error {
     mNoResultView.hidden = !([mTableData count] <= 0);
-    [mLoadingViewController hideLoading];
+    [mLoadingViewController forceHideLoading];
 }
 
 #pragma mark -
