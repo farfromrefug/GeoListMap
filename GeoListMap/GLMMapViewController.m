@@ -13,6 +13,7 @@
 @interface GLMMapViewController (Private)
 - (void)refreshMapAnnotations;
 -(void)_init;
+-(void)setMapRegion:(MKCoordinateRegion)region;
 @end
 
 
@@ -102,7 +103,7 @@
 	franceCenterCoordinate.longitude = kFranceCenterLongitude;
 	
 	MKCoordinateRegion region = MKCoordinateRegionMake(franceCenterCoordinate, MKCoordinateSpanMake(kFranceCenterSpan, kFranceCenterSpan));
-	[_mapView setRegion:region];
+	[self setMapRegion:region];
 	
 	[self refreshMapAnnotations];
 }
@@ -183,8 +184,7 @@
     MKCoordinateRegion region;
     region.center = _mapView.userLocation.location.coordinate;
     region.span = MKCoordinateSpanMake(2.0, 2.0);
-    region = [self.mapView regionThatFits:region];
-    [self.mapView setRegion:region animated:YES];
+    [self setMapRegion:region];
 }
 
 -(void)zoomToFitMapAnnotations
@@ -201,9 +201,9 @@
     {
         MKCoordinateRegion region;
         region.center = ((id<MKAnnotation>)[_mapView.annotations objectAtIndex:0]).coordinate;
-        region.span = MKCoordinateSpanMake(0.05, 0.05);
-        region = [self.mapView regionThatFits:region];
-        [self.mapView setRegion:region animated:YES];
+        region.span = MKCoordinateSpanMake(0.01, 0.01);
+        
+        [self setMapRegion:region];
         return;
     }
     
@@ -237,11 +237,22 @@
     region.span.latitudeDelta = ([_mapView.annotations count] == 1)? kMapDefaultSpanDelta:fabs(topLeftCoord.latitude - bottomRightCoord.latitude) * 1.3; // Add a little extra space on the sides
     region.span.longitudeDelta = ([_mapView.annotations count] == 1)? kMapDefaultSpanDelta:fabs(bottomRightCoord.longitude - topLeftCoord.longitude) * 1.3; // Add a little extra space on the sides
     
-    region = [_mapView regionThatFits:region];
-    [_mapView setRegion:region animated:YES];
+    [self setMapRegion:region];
 }
 #pragma mark -
 #pragma mark Map Custom Methods
+
+-(void)setMapRegion:(MKCoordinateRegion)region
+{
+    if (region.center.latitude <= -180 || region.center.longitude <= -180 ) 
+    {
+        NSLog(@"Invalid region!");
+        return;
+    }
+    MKCoordinateRegion actualRegion = [_mapView regionThatFits:region];
+    [_mapView setRegion:actualRegion animated:YES];
+}
+
 - (void)refreshMapAnnotations
 {	
 	

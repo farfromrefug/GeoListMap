@@ -6,7 +6,6 @@
 #import "GLMItemWrapper.h"
 #import "GLMMapViewController.h"
 
-#import "LoadingViewController.h"
 #import "CustomTitleView.h"
 
 @interface GLMViewController ()
@@ -59,7 +58,6 @@
             
             
             [mContainer bringSubviewToFront:mMapViewController.view];
-            [mContainer bringSubviewToFront:mLoadingViewController.view];
             [mMapViewController viewDidAppear:animated];
             //                [self.view bringSubviewToFront:mNoResultView];
             //				[self.view bringSubviewToFront:mFilterController.view];
@@ -101,7 +99,6 @@
             mTableView.layer.transform = transform;
             
             [mContainer bringSubviewToFront:mTableView];
-            [mContainer bringSubviewToFront:mLoadingViewController.view];
             //                [self.view bringSubviewToFront:mNoResultView];
             //                [self.view bringSubviewToFront:mFilterController.view];
             
@@ -179,24 +176,24 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)requestDidStartLoad:(TTURLRequest*)request {
-    [mLoadingViewController showLoading];
+    [LoadingManager showLoading];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)requestDidFinishLoad:(TTURLRequest*)request {
-    [mLoadingViewController forceHideLoading];
+    [LoadingManager forceHideLoading];
 }
 
 - (void)requestDidCancelLoad:(TTURLRequest*)request{
-    [request release];
+    [LoadingManager forceHideLoading];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)request:(TTURLRequest*)request didFailLoadWithError:(NSError*)error {
     mNoResultView.hidden = !([mTableData count] <= 0);
-    [mLoadingViewController forceHideLoading];
+    [LoadingManager forceHideLoading];
 }
 
 #pragma mark -
@@ -266,10 +263,6 @@
 //    [mContainer bringSubviewToFront:mNoResultView];
     mNoResultView.hidden = !([mTableData count] <= 0);
     
-    mLoadingViewController = [[[LoadingViewController alloc] init] retain];
-    [mContainer addSubview:mLoadingViewController.view];
-    [mLoadingViewController hideLoading];
-    
     self.navigationItem.titleView = [[[CustomTitleView alloc] initWithTitle:@"ListMap"] autorelease];
 
         
@@ -316,13 +309,7 @@
 }
 
 - (void)viewDidUnload {
-	[mTableData release];
-	[mMapViewController release];
-    
-    [mLoadingViewController release];
-    mLoadingViewController = nil;
-    [mContainer release];
-    mContainer = nil;
+	[self cleanup];
     [super viewDidUnload];
 }
 
@@ -384,12 +371,12 @@
 
 -(void)cleanup
 {
+    [[TTURLRequestQueue mainQueue] cancelRequestsWithDelegate:self];
     TT_RELEASE_SAFELY(mMapViewController);
     TT_RELEASE_SAFELY(_mapListButton);
     TT_RELEASE_SAFELY(mTableView); 
     TT_RELEASE_SAFELY(mTableData); 
     TT_RELEASE_SAFELY(mNoResultView); 
-    TT_RELEASE_SAFELY(mLoadingViewController); 
     TT_RELEASE_SAFELY(mContainer); 
 }
 

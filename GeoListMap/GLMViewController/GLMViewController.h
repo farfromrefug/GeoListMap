@@ -4,7 +4,6 @@
 
 @class GLMMapViewController;
 
-@class LoadingViewController;
 @interface GLMViewController : UIViewController
 <UITableViewDelegate, UITableViewDataSource, TTURLRequestDelegate>
 {
@@ -22,7 +21,6 @@
     IBOutlet UIImageView* mBgImageView;
     	
     IBOutlet UIView *mContainer;
-    LoadingViewController* mLoadingViewController;
     
     UIBarButtonItem* _mapListButton;
 }

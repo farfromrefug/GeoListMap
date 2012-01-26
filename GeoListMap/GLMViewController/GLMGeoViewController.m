@@ -6,7 +6,6 @@
 
 #import "LocationManager.h"
 #import "IPGeoLocFindViewController.h"
-#import "LoadingViewController.h"
 
 @implementation GLMGeoViewController
 @synthesize toolbarLabel = _toolbarLabel;
@@ -39,7 +38,7 @@
             [(TTButton*)self.geolocButton.customView setImage:nil forState:UIControlStateHighlighted];
             [(TTButton*)self.geolocButton.customView removeTarget:self action:@selector(chooseLocationButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             
-            [mLoadingViewController showLoading];
+//            [LoadingManager showLoading];
             [[LocationManager sharedInstance] goToCurrentLocation];
             break;
         }
@@ -58,7 +57,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    BOOL hideLoading = YES;
+//    BOOL hideLoading = YES;
     [self.geolocButton.customView removeAllSubviews];
     [(TTButton*)self.geolocButton.customView setImage:@"bundle://NavigationBar.bundle/geoloc.png" forState:UIControlStateNormal];
     [(TTButton*)self.geolocButton.customView setImage:@"bundle://NavigationBar.bundle/geoloc_on.png" forState:UIControlStateHighlighted];
@@ -69,7 +68,7 @@
 //        [self performSelector :@selector(refreshData)
 //                   withObject :nil
 //                   afterDelay :3.0];
-        hideLoading = NO;
+//        hideLoading = NO;
         [self refreshData];
     }
     else if ([keyPath isEqualToString:@"currentPlacemark"]
@@ -80,8 +79,8 @@
     } 
     else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    if (hideLoading)
-        [mLoadingViewController hideLoading];
+//    if (hideLoading)
+//        [LoadingManager hideLoading];
 }
 
 #pragma mark -
