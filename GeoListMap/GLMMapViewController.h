@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import "GLMItemWrapper.h"
+#import "MKMapView+Extension.h"
 
 #define kMapDefaultSpanDelta		0.5
 
@@ -24,7 +25,7 @@
 
 - (void)refreshMapAnnotations;
 
--(void)zoomToFitMapAnnotations;
+//-(void)zoomToFitMapAnnotations;
 - (id)initWithItemsList:(NSArray*)itemsList;
 - (id)initWithItem:(id<GLMItemWrapper>)item;
 

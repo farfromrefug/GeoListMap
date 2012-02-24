@@ -17,7 +17,7 @@
 - (void)chooseLocationButtonPressed
 {
     //invoque action sheet
-    UIActionSheet* actionShit = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Annuler", @"Action sheet cancel button") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Autour de vous", @"Action sheet around you"),NSLocalizedString(@"Autour d'une adresse", @"Action sheet around address"), nil];
+    UIActionSheet* actionShit = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Around You", @"Action sheet around you"),NSLocalizedString(@"Around an address", @"Action sheet around address"), nil];
     [actionShit showFromBarButtonItem:_geolocButton animated:YES];
     [actionShit release];
 }
@@ -97,8 +97,8 @@
 {
     NSMutableArray *items = [NSMutableArray array];  
     [items addObject:_geolocButton];
-    _toolbarLabel = [[[TTLabel alloc] initWithText:@"Test"] autorelease];
-    [items addObject:[[[UIBarButtonItem alloc] initWithCustomView:_toolbarLabel] autorelease]];
+//    _toolbarLabel = [[[TTLabel alloc] initWithText:@"Test"] autorelease];
+//    [items addObject:[[[UIBarButtonItem alloc] initWithCustomView:_toolbarLabel] autorelease]];
     
     [items addObject:[[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace   
                                                                   target:self action:nil] autorelease]];  
@@ -163,6 +163,11 @@
 
 - (void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+    
+    if (kNavMode == 1) //launcher
+    {
+        [self.navigationController setToolbarHidden:NO animated:animated];
+    }
 }
 
 - (void) viewDidAppear:(BOOL)animated {

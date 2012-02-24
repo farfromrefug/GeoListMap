@@ -38,7 +38,8 @@
         {
 //            mBgImageView.alpha = 0;
             
-            
+//            [mMapViewController zoomToFitMapAnnotations];
+            [mMapViewController.mapView resizeRegionToFitAllPins:mMapViewController.zoomFitWithCurrentLocation animated:NO];
             CATransform3D transform;
             
             if (animated) {

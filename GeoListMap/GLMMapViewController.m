@@ -71,11 +71,8 @@
 
 - (void)setItemsList:(NSArray*)itemsList
 {
-	if (mItemsList != nil)
-	{
-		[mItemsList release];
-		mItemsList = nil;
-	}
+    
+    NI_RELEASE_SAFELY(mItemsList);
 	
 	mItemsList = [itemsList retain];
 	
@@ -88,7 +85,7 @@
 {
 	[super viewDidLoad];
         
-    self.navigationItem.titleView = [[[CustomTitleView alloc] initWithTitle:NSLocalizedString(@"Map", nil) ] autorelease];
+    self.navigationItem.titleView = [[[CustomTitleView alloc] initWithTitle:NSLocalizedString(@"Map", @"title for MapViewController") ] autorelease];
     _mapView.frame = self.view.bounds;
     [self.view addSubview:_mapView];
 
@@ -140,7 +137,8 @@
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-    [self zoomToFitMapAnnotations];
+//    [self zoomToFitMapAnnotations];
+    [self.mapView resizeRegionToFitAllPins:_zoomFitWithCurrentLocation animated:YES];
     for(NSObject<MKAnnotation>* annotation in [_mapView selectedAnnotations])
     {
         [_mapView deselectAnnotation:annotation animated:NO];
@@ -187,58 +185,58 @@
     [self setMapRegion:region];
 }
 
--(void)zoomToFitMapAnnotations
-{
-    DLog(@"nb annot %d", [_mapView.annotations count]);
-    if([_mapView.annotations count] == 0 /*|| ( _mapView.userLocation && [_mapView.annotations count] == 1)*/)
-    {
-        
-        if (_mapView.userLocation != nil)
-            [self zoomToUserLocation];
-        return; 
-    }
-    else if ([_mapView.annotations count] == 1)
-    {
-        MKCoordinateRegion region;
-        region.center = ((id<MKAnnotation>)[_mapView.annotations objectAtIndex:0]).coordinate;
-        region.span = MKCoordinateSpanMake(0.01, 0.01);
-        
-        [self setMapRegion:region];
-        return;
-    }
-    
-    CLLocationCoordinate2D topLeftCoord;
-    topLeftCoord.latitude = -90;
-    topLeftCoord.longitude = 180;
-    
-    CLLocationCoordinate2D bottomRightCoord;
-    bottomRightCoord.latitude = 90;
-    bottomRightCoord.longitude = -180;
-    
-    for(id<MKAnnotation> annotation in _mapView.annotations)
-    {
-        if ([annotation isKindOfClass:[ MKUserLocation class]])
-        {
-            DLog(@"user loc annot");
-        }
-        if (!_zoomFitWithCurrentLocation && [annotation isKindOfClass:[ MKUserLocation class]])
-            continue;
-        
-        topLeftCoord.longitude = fmin(topLeftCoord.longitude, annotation.coordinate.longitude);
-        topLeftCoord.latitude = fmax(topLeftCoord.latitude, annotation.coordinate.latitude);
-        
-        bottomRightCoord.longitude = fmax(bottomRightCoord.longitude, annotation.coordinate.longitude);
-        bottomRightCoord.latitude = fmin(bottomRightCoord.latitude, annotation.coordinate.latitude);
-    }
-    
-    MKCoordinateRegion region;
-    region.center.latitude = topLeftCoord.latitude - (topLeftCoord.latitude - bottomRightCoord.latitude) * 0.5;
-    region.center.longitude = topLeftCoord.longitude + (bottomRightCoord.longitude - topLeftCoord.longitude) * 0.5;
-    region.span.latitudeDelta = ([_mapView.annotations count] == 1)? kMapDefaultSpanDelta:fabs(topLeftCoord.latitude - bottomRightCoord.latitude) * 1.3; // Add a little extra space on the sides
-    region.span.longitudeDelta = ([_mapView.annotations count] == 1)? kMapDefaultSpanDelta:fabs(bottomRightCoord.longitude - topLeftCoord.longitude) * 1.3; // Add a little extra space on the sides
-    
-    [self setMapRegion:region];
-}
+//-(void)zoomToFitMapAnnotations
+//{
+//    DLog(@"nb annot %d", [_mapView.annotations count]);
+//    if([_mapView.annotations count] == 0 /*|| ( _mapView.userLocation && [_mapView.annotations count] == 1)*/)
+//    {
+//        
+//        if (_mapView.userLocation != nil)
+//            [self zoomToUserLocation];
+//        return; 
+//    }
+//    else if ([_mapView.annotations count] == 1)
+//    {
+//        MKCoordinateRegion region;
+//        region.center = ((id<MKAnnotation>)[_mapView.annotations objectAtIndex:0]).coordinate;
+//        region.span = MKCoordinateSpanMake(0.01, 0.01);
+//        
+//        [self setMapRegion:region];
+//        return;
+//    }
+//    
+//    CLLocationCoordinate2D topLeftCoord;
+//    topLeftCoord.latitude = -90;
+//    topLeftCoord.longitude = 180;
+//    
+//    CLLocationCoordinate2D bottomRightCoord;
+//    bottomRightCoord.latitude = 90;
+//    bottomRightCoord.longitude = -180;
+//    
+//    for(id<MKAnnotation> annotation in _mapView.annotations)
+//    {
+//        if ([annotation isKindOfClass:[ MKUserLocation class]])
+//        {
+//            DLog(@"user loc annot");
+//        }
+//        if (!_zoomFitWithCurrentLocation && [annotation isKindOfClass:[ MKUserLocation class]])
+//            continue;
+//        
+//        topLeftCoord.longitude = fmin(topLeftCoord.longitude, annotation.coordinate.longitude);
+//        topLeftCoord.latitude = fmax(topLeftCoord.latitude, annotation.coordinate.latitude);
+//        
+//        bottomRightCoord.longitude = fmax(bottomRightCoord.longitude, annotation.coordinate.longitude);
+//        bottomRightCoord.latitude = fmin(bottomRightCoord.latitude, annotation.coordinate.latitude);
+//    }
+//    
+//    MKCoordinateRegion region;
+//    region.center.latitude = topLeftCoord.latitude - (topLeftCoord.latitude - bottomRightCoord.latitude) * 0.5;
+//    region.center.longitude = topLeftCoord.longitude + (bottomRightCoord.longitude - topLeftCoord.longitude) * 0.5;
+//    region.span.latitudeDelta = ([_mapView.annotations count] == 1)? kMapDefaultSpanDelta:fabs(topLeftCoord.latitude - bottomRightCoord.latitude) * 1.3; // Add a little extra space on the sides
+//    region.span.longitudeDelta = ([_mapView.annotations count] == 1)? kMapDefaultSpanDelta:fabs(bottomRightCoord.longitude - topLeftCoord.longitude) * 1.3; // Add a little extra space on the sides
+//    
+//    [self setMapRegion:region];
+//}
 #pragma mark -
 #pragma mark Map Custom Methods
 
@@ -257,15 +255,7 @@
 {	
 	
 	// remove all current annotations
-	NSMutableArray* annotationToRemove = [NSMutableArray arrayWithCapacity:0];
-	for (NSObject<MKAnnotation>* annotation in [_mapView annotations])
-	{
-		if ([annotation isKindOfClass:[GLMAnnotation class]])
-		{
-			[annotationToRemove addObject:annotation];
-		}
-	}
-	[_mapView removeAnnotations:annotationToRemove];
+	[_mapView removeAnnotations:[_mapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"!(self isKindOfClass: %@)", [MKUserLocation class]]]];
     
 	for (id<GLMItemWrapper> item in mItemsList)
 	{
@@ -284,7 +274,8 @@
         [annot release];
 	}
     
-    [self zoomToFitMapAnnotations];
+//    [self zoomToFitMapAnnotations];
+    [self.mapView resizeRegionToFitAllPins:_zoomFitWithCurrentLocation animated:YES];
 }
 
 #pragma mark -
@@ -359,7 +350,8 @@
 
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
 {
-    [self zoomToFitMapAnnotations];
+//    [self zoomToFitMapAnnotations];
+    [self.mapView resizeRegionToFitAllPins:_zoomFitWithCurrentLocation animated:YES];
 }
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
